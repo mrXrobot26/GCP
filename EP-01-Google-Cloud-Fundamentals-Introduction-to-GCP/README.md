@@ -272,7 +272,7 @@ The orange arrows follow a normal request through the app. The dashed blue line 
 
 ## Next
 
-EP-02: accounts, projects and APIs.
+[EP-02: accounts, projects and APIs](../EP-02-GCP-Accounts-Projects-and-APIs/README.md).
 
 ---
 
