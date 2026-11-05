@@ -68,14 +68,19 @@
 
 الـ data centers بتاعة Google Cloud متجمعة حسب مكانها. ومجموعة الـ data centers اللي في منطقة جغرافية واحدة اسمها **region**، وكل region ليها اسم:
 
-| الـ Region | المكان |
-|---:|---:|
-| `us-central1` | كاونسل بلافس، ولاية آيوا، أمريكا |
-| `us-west2` | لوس أنجلوس، أمريكا |
-| `europe-west3` | فرانكفورت، ألمانيا |
-| `africa-south1` | جوهانسبرج، جنوب أفريقيا |
-| `me-central1` | الدوحة، قطر |
-| `me-central2` | الدمام، السعودية |
+<table dir="rtl">
+<thead>
+<tr><th align="right" style="text-align:right">الـ Region</th><th align="right" style="text-align:right">المكان</th></tr>
+</thead>
+<tbody>
+<tr><td><code>us-central1</code></td><td>كاونسل بلافس، ولاية آيوا، أمريكا</td></tr>
+<tr><td><code>us-west2</code></td><td>لوس أنجلوس، أمريكا</td></tr>
+<tr><td><code>europe-west3</code></td><td>فرانكفورت، ألمانيا</td></tr>
+<tr><td><code>africa-south1</code></td><td>جوهانسبرج، جنوب أفريقيا</td></tr>
+<tr><td><code>me-central1</code></td><td>الدوحة، قطر</td></tr>
+<tr><td><code>me-central2</code></td><td>الدمام، السعودية</td></tr>
+</tbody>
+</table>
 
 الاسم بيقولك الـ region موجودة فين تقريبًا. `europe-west3` هي region رقم 3 في غرب أوروبا، و `me` اختصار Middle East يعني الشرق الأوسط. والـ data center اللي في الصورة فوق موجود في كاونسل بلافس، نفس مدينة `us-central1`.
 
@@ -116,19 +121,61 @@
 
 يعني على أرض الواقع الترتيب كده: شبكة Google مغطية العالم، والشبكة متقسمة لـ regions، وكل region متقسمة لـ zones، وكل zone فيها data center واحد أو أكتر.
 
-## الـ resources: global و regional و zonal
+![شكل متدرج من فوق لتحت: شبكة Google العالمية، وتحتها regions زي us-central1 في أيوا و europe-west3 في فرانكفورت و me-central2 في الدمام، وتحت europe-west3 التلات zones بتوعها، وتحت europe-west3-a الـ data centers بتوعها.](images/physical-hierarchy.drawio.svg)
+
+## الـ resources: الـ global والـ regional والـ zonal
 
 أي حاجة بتعملها في Google Cloud، زي virtual machine أو disk أو network، اسمها **resource**. وكل resource ليه scope بيقولك هو واصل لحد فين:
 
-| الـ Scope | تقدر تستخدمه من | أمثلة |
-|---:|---:|---:|
-| Global | أي region أو zone | الـ VPC networks والـ OS images |
-| Regional | أي zone في نفس الـ region | الـ subnets والـ regional static IPs |
-| Zonal | نفس الـ zone بس | الـ virtual machines (VMs) والـ disks |
+<table dir="rtl">
+<thead>
+<tr><th align="right" style="text-align:right">الـ Scope</th><th align="right" style="text-align:right">تقدر تستخدمه من</th><th align="right" style="text-align:right">أمثلة</th></tr>
+</thead>
+<tbody>
+<tr><td>Global</td><td>أي region أو zone</td><td>الـ VPC networks والـ OS images</td></tr>
+<tr><td>Regional</td><td>أي zone في نفس الـ region</td><td>الـ subnets والـ regional static IPs</td></tr>
+<tr><td>Zonal</td><td>نفس الـ zone بس</td><td>الـ virtual machines (VMs) والـ disks</td></tr>
+</tbody>
+</table>
 
 ![مربعات جوه بعض: المستوى الـ global فيه VPC network و OS image. وجواه الـ region اللي اسمها us-central1، وفيها subnet و static IP. وجواها الـ zone اللي اسمها us-central1-a، وفيها VM والـ disk بتاعه.](images/resource-scopes.drawio.svg)
 
-هتقابل الكلام ده أول ما تبدأ تعمل حاجات بنفسك. الـ VM بيطلب منك تختار zone، والـ subnet بيطلب منك تختار region، أما الـ VPC network فهي global، يعني مش تبع أي region خالص.
+المربعات اللي في الصورة دي اقراها زي خريطة، مش زي فولدرات. المربع الكبير هو العالم كله، وجواه region واحدة، وجواها zone واحدة. وكل resource متحط في أصغر مربع هو مربوط بيه. يعني الـ VPC network مش شايلة الـ region جواها، هي بس في المربع الكبير لأنها مش تبع أي region. وكمان انت عمرك ما هتعمل region أو zone بنفسك. دي أماكن Google بنتها خلاص، وانت بس بتختار منها.
+
+### الـ VPC network والـ subnet
+
+فكّر في شبكة البيت عندك. الراوتر بيوصّل اللابتوب والموبايل ببعض، وكل جهاز بياخد IP داخلي زي `192.168.1.5`. والأجهزة دي بتكلم بعض جوه البيت، ومحدش من بره يقدر يوصلها إلا لو انت سمحت.
+
+الـ **VPC network** (اختصار Virtual Private Cloud) هي نفس الفكرة جوه Google Cloud: شبكة خاصة بيك، معمولة بالـ software فوق شبكة Google الحقيقية. وأي VM لازم يكون متوصّل بـ VPC network، وبياخد منها IP داخلي. والـ VMs اللي على نفس الـ network بتكلم بعض بالـ IPs دي من غير ما الكلام يطلع على الإنترنت، والـ **firewall rules** هي اللي بتحدد إيه اللي يدخل وإيه اللي يخرج.
+
+والـ VPC network بتكون global، يعني network واحدة بتغطي كل الـ regions. وجواها بتعمل **subnets**، وكل subnet تبع region واحدة وليها range من الـ IPs، زي `10.128.0.0/20`.
+
+### الـ VM بيتوصل بإيه؟
+
+لما تعمل VM بتختار zone، والـ VM ده بيتوصل بحاجات من التلات مستويات:
+
+![الـ VM في الـ zone اللي اسمها us-central1-a، وبيتوصل بـ subnet في الـ region اللي اسمها us-central1، والـ subnet دي جزء من الـ VPC network اللي اسمها my-vpc، وهي global. والـ boot disk بتاعه في نفس الـ zone، ومعمول من الـ OS image اللي اسمها debian-12، وهي global كمان.](images/vm-connections.drawio.svg)
+
+- بيتوصل بـ **subnet** في نفس الـ region بتاعة الـ zone بتاعته، وبياخد الـ IP الداخلي بتاعه من الـ range بتاعها.
+- والـ subnet دي جزء من **VPC network**.
+- والـ **boot disk** بتاعه بيكون في نفس الـ zone، وبيتعمل من **OS image**، زي Debian مثلًا.
+
+### لازم أعمل network الأول؟
+
+في الأول لأ. أول ما تفعّل Compute Engine في أي project، هتلاقي Google عاملالك VPC network جاهزة اسمها `default`، وفيها subnet في كل region. فلما تعمل أول VMs ليك، بتختار الـ zone والـ image بس، والـ VM بيتوصل لوحده بالـ subnet بتاعة الـ region دي في الـ `default` network.
+
+بعد كده، لما تحب تختار الـ IP ranges والـ firewall rules بنفسك، هتعمل VPC network بتاعتك. وساعتها الترتيب بيبقى كده: تعمل الـ VPC network، وبعدين subnet في الـ region اللي عاوزها، وبعدين الـ VM في zone من zones الـ region دي.
+
+### طب ليه كل حاجة ليها scope مختلف؟
+
+الـ scope بتاع كل حاجة ماشي مع طبيعتها:
+
+- الـ **VM** شغال على server حقيقي في data center معين، فلازم يكون في zone واحدة.
+- الـ **disk** لازم يكون قريب من الـ VM بتاعه عشان يبقى سريع، فبيكون في نفس الـ zone.
+- الـ **subnet** مجرد range من الـ IPs للـ region كلها. عشان كده VM في `us-central1-a` و VM في `us-central1-b` ممكن يكونوا على نفس الـ subnet.
+- الـ **static IP** عنوان بتحجزه عشان ميتغيرش. وبيتحجز في region واحدة، وتقدر تديه لأي VM فيها.
+- الـ **VPC network** مجرد software، يعني rules و routing، ومفيش حاجة بتربطها بمكان واحد. فـ Google خلتها global، وعشان كده network واحدة ممكن يكون ليها subnets في أمريكا وألمانيا، والـ VMs اللي فيهم يكلموا بعض بالـ IPs الداخلية.
+- الـ **OS image** مجرد ملف بيتعمل منه disks، فتقدر تستخدمه في أي zone.
 
 ## الخدمات اللي GCP بتقدمها
 
@@ -163,10 +210,15 @@
 
 التطبيق بقى مشهور. مستخدمين أكتر يعني requests أكتر، وعند نقطة معينة server واحد مش هيقدر يلاحق. وفيه طريقتين تتعامل بيهم مع ده:
 
-| | بتعمل إيه | اسمها كمان |
-|---:|---:|---:|
-| الـ Vertical scaling | بتدّي الـ server بتاعك CPU و RAM أكتر | الـ scaling up (أو down) |
-| الـ Horizontal scaling | بتزوّد عدد الـ servers | الـ scaling out (أو in) |
+<table dir="rtl">
+<thead>
+<tr><th></th><th align="right" style="text-align:right">بتعمل إيه</th><th align="right" style="text-align:right">اسمها كمان</th></tr>
+</thead>
+<tbody>
+<tr><td>الـ Vertical scaling</td><td>بتدّي الـ server بتاعك CPU و RAM أكتر</td><td>الـ scaling up (أو down)</td></tr>
+<tr><td>الـ Horizontal scaling</td><td>بتزوّد عدد الـ servers</td><td>الـ scaling out (أو in)</td></tr>
+</tbody>
+</table>
 
 الـ vertical scaling زي إنك تبدّل عربيتك بأتوبيس، والـ horizontal scaling زي إنك تجيب عربيات زيادة. في الـ cloud هتشوف الـ horizontal scaling أغلب الوقت: الماكينة الواحدة ليها حد في الكبر، ولما يبقى عندك كذا ماكينة، واحدة فيهم ممكن تقع من غير ما التطبيق يقع معاها.
 
@@ -215,6 +267,17 @@
 </p>
 <p align="center"><em>من غير CDN، كل الناس بتحمّل من server واحد (الشمال). ومع الـ CDN، كل واحد بيحمّل من نسخة قريبة منه (اليمين).</em></p>
 
+طب إيه الفرق بين الـ CDN والـ edge nodes اللي اتكلمنا عنها فوق، ما الاتنين بيحتفظوا بنسخة قريبة من المستخدم؟ الـ edge node هو **مكان**: server قريب من الناس بيحتفظ بنسخ. أما الـ CDN فهو **الخدمة** كلها، اللي مبنية على أماكن كتير زي دي، ومعاها النظام اللي بيشغّلها:
+
+- بيبعت كل مستخدم لأقرب edge.
+- لو الملف موجود هناك، ودي اسمها **cache hit**، بيرجّعه على طول.
+- لو مش موجود، ودي اسمها **cache miss**، بيجيبه من الـ **origin**، يعني الـ server أو الـ bucket بتاعك، ويحتفظ بنسخة للي بعده.
+- النسخ القديمة بتتمسح بعد وقت معين، عشان المستخدمين ميفضلوش ياخدوا ملف قديم.
+
+فاكر السوبر ماركت الصغير اللي جنب بيتك؟ ده الـ edge node. والـ CDN هو السلسلة كلها، ومعاها النظام اللي بيقرر كل فرع يشيل إيه، وبيوديك لأقرب فرع، ولو حاجة ناقصة بيجيبها من المخزن الرئيسي.
+
+وفي Google هتقابل الاتنين. الـ edge nodes اللي اتكلمنا عنها فوق، واسمها Google Global Cache، دي بتاعة Google نفسها، وبتخدم حاجات زي YouTube من جوه شبكات الـ ISPs. أما الـ Cloud CDN فهو اللي بتستخدمه انت كعميل في Google Cloud: بيعمل cache لملفات تطبيقك، زي الصور والفيديوهات وملفات الـ JavaScript والـ CSS، على الـ edge بتاع Google، فتوصل للمستخدمين أسرع.
+
 ### كل الـ data دي: الـ analytics والـ ML
 
 دلوقتي التطبيق بيطلّع live data كتير: زيارات، و clicks، وعمليات بحث، وطلبات. والـ data دي قيمتها كبيرة. الـ **data pipeline** بيجمعها وينقلها لـ **data lake**، ومعاها data جاية من مصادر تانية. الـ data engineers والـ data scientists بيحللوها، وموديلات الـ machine learning بتستخدمها عشان تتوقع العملاء هيعوزوا إيه.
@@ -246,6 +309,7 @@
 - الـ region مجموعة data centers في منطقة واحدة. بتختارها حسب المستخدمين بتوعك فين، وهتعدّي الكوارث إزاي، والقانون بيقول إيه.
 - الـ zone جزء معزول من الـ region، ليه الكهربا والتبريد والشبكة بتوعه. كذا zone بيحموك من الأعطال المحلية، وكذا region بيحموك من الأعطال الأكبر.
 - أي resource يا global، يا regional، يا zonal.
+- الـ VPC network هي الشبكة الخاصة بيك جوه Google Cloud. هي global، والـ subnets بتاعتها regional، وكل VM بيتوصل بـ subnet منهم.
 - خدمات GCP متقسمة لمجموعات: compute و networking و databases و object storage و IAM و security و DevOps و management و migration و analytics/ML/AI.
 - كل ما التطبيق يكبر بيحتاج scaling و load balancing و caching و object storage و CDN و data analytics، وحوالين كل ده security و IAM و monitoring و DevOps والتحكم في التكلفة.
 
@@ -256,9 +320,11 @@
 3. كل عملائك في ألمانيا. هتختار أنهي region، وليه؟
 4. ليه تشغّل التطبيق في اتنين zones بدل zone واحدة؟
 5. الـ VM ده global ولا regional ولا zonal؟ وطب الـ VPC network، والـ subnet؟
-6. إيه الفرق بين الـ scaling up والـ scaling out؟
-7. ليه نحط cache قدام الـ database؟
-8. منتج ليه صورة. إيه اللي يتحط في الـ database، وإيه اللي يتحط في الـ object storage؟
+6. لازم تعمل VPC network الأول عشان تقدر تعمل أول VM؟
+7. إيه الفرق بين الـ scaling up والـ scaling out؟
+8. ليه نحط cache قدام الـ database؟
+9. منتج ليه صورة. إيه اللي يتحط في الـ database، وإيه اللي يتحط في الـ object storage؟
+10. إيه الفرق بين الـ edge node والـ CDN؟
 
 <details>
 <summary>الإجابات</summary>
@@ -268,9 +334,11 @@
 3. أي region في ألمانيا، زي `europe-west3` في فرانكفورت. لأنها الأقرب للمستخدمين، فالـ latency هتبقى أقل، والـ data هتفضل جوه أوروبا.
 4. الـ zones بتقع كل واحدة لوحدها. فلو واحدة وقعت، نسخة التطبيق اللي في الـ zone التانية بتخليه شغال.
 5. الـ VM ده zonal، والـ VPC network هي global، والـ subnet ده regional.
-6. الـ scaling up بيكبّر server واحد، والـ scaling out بيزوّد عدد الـ servers.
-7. عشان الـ data اللي بتتطلب كتير تيجي من الـ RAM بدل الـ disk بتاع الـ database، ودي أسرع بكتير، وكمان الـ database يوصلها queries أقل.
-8. الـ database بتحتفظ بالـ metadata (الاسم، والسعر، ومكان الصورة)، والـ object storage بيحتفظ بملف الصورة نفسه.
+6. لأ. أول ما تفعّل Compute Engine، بتلاقي network جاهزة اسمها `default` فيها subnet في كل region، والـ VMs الجديدة بتتوصل بيها لوحدها.
+7. الـ scaling up بيكبّر server واحد، والـ scaling out بيزوّد عدد الـ servers.
+8. عشان الـ data اللي بتتطلب كتير تيجي من الـ RAM بدل الـ disk بتاع الـ database، ودي أسرع بكتير، وكمان الـ database يوصلها queries أقل.
+9. الـ database بتحتفظ بالـ metadata (الاسم، والسعر، ومكان الصورة)، والـ object storage بيحتفظ بملف الصورة نفسه.
+10. الـ edge node مكان: server قريب من المستخدمين بيحتفظ بنسخ. والـ CDN هو الخدمة المبنية على أماكن كتير زي دي، ومعاها النظام اللي بيبعت كل مستخدم لأقرب نسخة، ويجيب الملف من الـ server بتاعك لو مش موجود.
 
 </details>
 

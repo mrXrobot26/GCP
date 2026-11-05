@@ -37,11 +37,16 @@
 
 كل project ليه تلات حاجات بتعرّفه:
 
-| | مثال | تقدر تغيره؟ |
-|---:|---:|---:|
-| الـ Project name | `My Blog` | أيوه، في أي وقت |
-| الـ Project ID | `my-blog-482913` | لأ، ثابت للأبد |
-| الـ Project number | `512345678901` | لأ، Google هي اللي بتحدده |
+<table dir="rtl">
+<thead>
+<tr><th></th><th align="right" style="text-align:right">مثال</th><th align="right" style="text-align:right">تقدر تغيره؟</th></tr>
+</thead>
+<tbody>
+<tr><td>الـ Project name</td><td><code>My Blog</code></td><td>أيوه، في أي وقت</td></tr>
+<tr><td>الـ Project ID</td><td><code>my-blog-482913</code></td><td>لأ، ثابت للأبد</td></tr>
+<tr><td>الـ Project number</td><td><code>512345678901</code></td><td>لأ، Google هي اللي بتحدده</td></tr>
+</tbody>
+</table>
 
 الاسم مجرد label للناس. الـ **project ID** هو المهم: هتكتبه في الـ commands وتستخدمه في الكود على طول. لازم يكون من 6 لـ 30 حرف، وفيه حروف lowercase وأرقام و hyphens بس، ويبدأ بحرف. ولازم يكون unique على Google Cloud كله، مش على الـ account بتاعك بس. وأول ما الـ project يتعمل، الـ ID بتاعه مش بيتغير، وحتى لو مسحت الـ project، محدش هيقدر يستخدم الـ ID ده تاني. فيستاهل تفكر فيه كام ثانية.
 

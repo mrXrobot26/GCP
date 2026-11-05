@@ -114,6 +114,8 @@ As of November 2026, Google Cloud has 43 regions and 130 zones, and new regions 
 
 So the physical side looks like this: Google's network covers the world, the network is divided into regions, each region into zones, and each zone into one or more data centers.
 
+![From top to bottom: Google's global network; under it, regions like us-central1 in Iowa, europe-west3 in Frankfurt and me-central2 in Dammam; under europe-west3, its three zones; and under europe-west3-a, its data centers.](images/physical-hierarchy.drawio.svg)
+
 ## Global, regional and zonal resources
 
 Everything you create in Google Cloud, like a virtual machine, a disk or a network, is called a **resource**. Every resource has a scope that tells you how far it reaches:
@@ -126,7 +128,42 @@ Everything you create in Google Cloud, like a virtual machine, a disk or a netwo
 
 ![Nested boxes: the global level holds a VPC network and an OS image. Inside it, the region us-central1 holds a subnet and a static IP. Inside that, the zone us-central1-a holds a VM and its disk.](images/resource-scopes.drawio.svg)
 
-You'll run into this as soon as you start creating things. A VM asks you to pick a zone, a subnet asks you to pick a region, and a VPC network is global, so it doesn't belong to any region at all.
+Read the boxes in this picture like a map, not like folders. The big box is the whole world, inside it is one region, and inside that is one zone. Each resource sits in the smallest box it's tied to. So the VPC network isn't holding the region: it's in the big box only because it isn't tied to any region. And you never create regions or zones yourself. Google built them, and you just pick one.
+
+### VPC networks and subnets
+
+Think of the network in your home. The router connects your laptop and your phone, each device gets a private IP like `192.168.1.5`, and they can talk to each other, while nobody outside can reach them unless you allow it.
+
+A **VPC network** (Virtual Private Cloud) is the same idea inside Google Cloud: your own private network, built in software on top of Google's physical network. Every VM has to be connected to one, and it gets a private IP from it. VMs on the same VPC network talk to each other with those IPs without going out to the internet, and **firewall rules** decide what's allowed in and out.
+
+A VPC network is global, so one network covers every region. Inside it, you create **subnets**. Each subnet belongs to one region and has its own range of IPs, like `10.128.0.0/20`.
+
+### What a VM connects to
+
+When you create a VM, you pick a zone, and the VM connects to things at all three levels:
+
+![The VM lives in zone us-central1-a. It connects to a subnet in region us-central1, and the subnet is part of the global VPC network my-vpc. Its boot disk is in the same zone, and the disk was created from the global OS image debian-12.](images/vm-connections.drawio.svg)
+
+- It connects to a **subnet** in the same region as its zone, and gets its private IP from that subnet's range.
+- That subnet is part of a **VPC network**.
+- Its **boot disk** is in the same zone, and it's created from an **OS image**, like Debian.
+
+### Do you have to create a network first?
+
+Not at the start. When you turn on Compute Engine in a project, Google creates a ready-made VPC network called `default`, with a subnet in every region. So for your first VMs, you just pick a zone and an image, and the VM gets connected to the `default` network's subnet in that region on its own.
+
+Later, when you want to choose your own IP ranges and firewall rules, you create your own VPC network. Then the order is: create the VPC network, then a subnet in the region you want, then the VM in one of that region's zones.
+
+### Why does each one have a different scope?
+
+Each scope follows what the thing really is:
+
+- A **VM** runs on a real server in one data center, so it has to live in one zone.
+- A **disk** has to be close to its VM to be fast, so it's in the same zone.
+- A **subnet** is just a range of IPs for a whole region, so a VM in `us-central1-a` and a VM in `us-central1-b` can be on the same subnet.
+- A **static IP** is an address you reserve so it doesn't change. It's reserved in one region, and you can give it to any VM there.
+- A **VPC network** is just software, meaning rules and routing, and nothing ties it to one place. Google made it global, so one network can have subnets in the US and in Germany, and their VMs can talk to each other with private IPs.
+- An **OS image** is just a file that disks are created from, so you can use it in any zone.
 
 ## What GCP offers
 
@@ -213,6 +250,17 @@ This is called a **CDN** (Content Delivery Network). On GCP it's Cloud CDN.
 </p>
 <p align="center"><em>Without a CDN, everyone downloads from one server (left). With a CDN, users download from a copy close to them (right).</em></p>
 
+You might wonder how a CDN is different from the edge nodes we talked about earlier, since both keep a copy close to the user. An edge node is a **place**: a server near users that holds copies. A CDN is the whole **service** built on many of those places, plus the logic that runs them:
+
+- It sends each user to the nearest edge location.
+- If the file is already there (a **cache hit**), it's served right away.
+- If it isn't (a **cache miss**), it's fetched from the **origin**, meaning your own server or bucket, and a copy is kept for the next user.
+- Old copies expire after a while, so users don't keep getting an outdated file.
+
+Remember the small shop near your house? That's the edge node. The CDN is the whole chain of shops, plus the system that decides what each shop keeps in stock, sends you to the nearest one, and restocks from the main warehouse when something is missing.
+
+On Google you'll see both. The edge nodes from earlier (Google Global Cache) belong to Google and serve Google's own content, like YouTube, from inside ISPs' networks. Cloud CDN is what you use as a customer: it caches your app's files, like images, videos, JavaScript and CSS, at Google's edge, so they reach your users faster.
+
 ### All that data: analytics and ML
 
 By now the app is producing a lot of live data: visits, clicks, searches, orders. That data is worth a lot. A **data pipeline** collects it and moves it into a **data lake**, together with data from other sources. Data engineers and data scientists analyze it, and machine learning models use it to predict what customers will want.
@@ -244,6 +292,7 @@ The orange arrows follow a normal request through the app. The dashed blue line 
 - A region is a group of data centers in one area. You choose it based on where your users are, how you'll survive a disaster, and what the law requires.
 - A zone is an isolated part of a region with its own power, cooling and network. Several zones protect you from local outages, several regions protect you from bigger ones.
 - Every resource is global, regional or zonal.
+- A VPC network is your private network in Google Cloud. It's global, its subnets are regional, and every VM connects to one of those subnets.
 - GCP services fall into categories: compute, networking, databases, object storage, IAM, security, DevOps, management, migration, and analytics/ML/AI.
 - As an app grows it needs scaling, load balancing, caching, object storage, a CDN and data analytics, with security, IAM, monitoring, DevOps and cost control around all of it.
 
@@ -254,9 +303,11 @@ The orange arrows follow a normal request through the app. The dashed blue line 
 3. All your customers are in Germany. Which region would you pick, and why?
 4. Why run your app in two zones instead of one?
 5. Is a VM global, regional or zonal? What about a VPC network, or a subnet?
-6. What's the difference between scaling up and scaling out?
-7. Why put a cache in front of a database?
-8. A product has a photo. What goes in the database, and what goes in object storage?
+6. Do you have to create a VPC network before you can create your first VM?
+7. What's the difference between scaling up and scaling out?
+8. Why put a cache in front of a database?
+9. A product has a photo. What goes in the database, and what goes in object storage?
+10. What's the difference between an edge node and a CDN?
 
 <details>
 <summary>Answers</summary>
@@ -266,9 +317,11 @@ The orange arrows follow a normal request through the app. The dashed blue line 
 3. A German region such as `europe-west3` (Frankfurt). It's closest to your users, so latency is lower, and the data stays in Europe.
 4. Zones fail independently. If one goes down, the copy of your app in the other zone keeps it running.
 5. A VM is zonal, a VPC network is global, and a subnet is regional.
-6. Scaling up makes one server bigger. Scaling out adds more servers.
-7. Frequently requested data comes from RAM instead of the database's disk, which is much faster, and the database gets fewer queries.
-8. The database keeps the metadata (name, price, where the photo is). Object storage keeps the photo file itself.
+6. No. When you turn on Compute Engine, Google creates a network called `default` with a subnet in every region, and new VMs connect to it on their own.
+7. Scaling up makes one server bigger. Scaling out adds more servers.
+8. Frequently requested data comes from RAM instead of the database's disk, which is much faster, and the database gets fewer queries.
+9. The database keeps the metadata (name, price, where the photo is). Object storage keeps the photo file itself.
+10. An edge node is a place: a server near users that keeps copies. A CDN is the service built on many of those places, with the logic that sends each user to the nearest copy and fetches a file from your server when it's missing.
 
 </details>
 
