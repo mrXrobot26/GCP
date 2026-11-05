@@ -1,5 +1,7 @@
 # EP-02: Accounts, Projects and APIs
 
+**English** | [عربي](README.ar.md)
+
 EP-01 was about the big picture: Google's network, regions and zones, and the kinds of services GCP offers. This part is lighter and more hands-on. We'll see how accounts, billing and projects fit together, and how you talk to Google Cloud through its APIs. Then we'll do it for real: create an account, set a budget, create a project and turn on an API, first in the console and then from the command line.
 
 ## Who uses Google Cloud?

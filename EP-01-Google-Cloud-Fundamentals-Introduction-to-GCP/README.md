@@ -97,6 +97,8 @@ Zone names are just the region name plus a letter:
 
 The zones in a region are connected by very fast links with low latency, so copies of your app in different zones can talk to each other quickly.
 
+Keep in mind that all the zones of a region are in the same area, not spread across different cities. That's on purpose, so the latency between them stays very low. If you want different cities, that means different regions, like `europe-west3` in Frankfurt and `europe-west10` in Berlin.
+
 ### When something breaks
 
 This is the real reason zones and regions exist. Problems come in two sizes:
