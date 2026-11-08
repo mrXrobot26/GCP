@@ -322,7 +322,7 @@ gcloud projects remove-iam-policy-binding PROJECT_ID \
 
 ## الجاي
 
-الجزء الجاي (EP-04) عن الـ service accounts والـ keys والـ impersonation، وده الجزء التاني من الـ IAM.
+الجزء الجاي هو [EP-04، عن الـ service accounts والـ keys والـ impersonation](../EP-04-Service-Accounts-Keys-and-Impersonation/README.ar.md)، وده الجزء التاني من الـ IAM.
 
 ---
 

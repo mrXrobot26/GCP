@@ -259,7 +259,7 @@ gcloud projects remove-iam-policy-binding PROJECT_ID \
 
 ## Next
 
-EP-04: Service accounts, keys and impersonation (IAM, part 2).
+[EP-04: Service accounts, keys and impersonation (IAM, part 2)](../EP-04-Service-Accounts-Keys-and-Impersonation/README.md).
 
 ---
 
