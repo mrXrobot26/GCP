@@ -272,7 +272,7 @@ gcloud projects list
 
 ## الجاي
 
-الجزء الجاي (EP-03) عن الـ IAM، يعني مين مسموح له يعمل إيه في Google Cloud.
+الجزء الجاي هو [EP-03، عن الـ IAM، يعني مين مسموح له يعمل إيه في Google Cloud](../EP-03-Identity-and-Access-Management-on-GCP-Part-1/README.ar.md).
 
 ---
 

@@ -228,7 +228,7 @@ gcloud projects list
 
 ## Next
 
-EP-03: IAM, or who is allowed to do what in Google Cloud.
+[EP-03: IAM, or who is allowed to do what in Google Cloud](../EP-03-Identity-and-Access-Management-on-GCP-Part-1/README.md).
 
 ---
 
