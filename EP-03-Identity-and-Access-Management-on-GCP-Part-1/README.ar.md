@@ -233,7 +233,7 @@ gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
 
 ## جرّب بنفسك
 
-الـ account الشخصي مفيهوش organization ولا folders، بس الـ projects بتشتغل بنفس الطريقة بالظبط. والـ EP-05 عبارة عن lab عملي كامل للـ IAM، ودي مجرد نظرة أولى.
+الـ account الشخصي مفيهوش organization ولا folders، بس الـ projects بتشتغل بنفس الطريقة بالظبط. والـ [EP-05](../EP-05-Hands-on-Lab-IAM-and-Service-Account-Impersonation/README.ar.md) عبارة عن lab عملي كامل للـ IAM، ودي مجرد نظرة أولى.
 
 شوف مين عنده access على الـ project بتاعك:
 

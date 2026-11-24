@@ -166,7 +166,7 @@ gcloud prints a warning that it's using impersonation, then runs the command as 
 
 ## Try it
 
-EP-05 is a full lab on IAM and impersonation, so this is just a quick first run. You need a project with the Compute Engine API turned on, like the one from EP-02.
+[EP-05](../EP-05-Hands-on-Lab-IAM-and-Service-Account-Impersonation/README.md) is a full lab on IAM and impersonation, so this is just a quick first run. You need a project with the Compute Engine API turned on, like the one from EP-02.
 
 Create a service account and give it read-only access to Compute Engine:
 
@@ -254,7 +254,7 @@ gcloud iam service-accounts delete demo-viewer@PROJECT_ID.iam.gserviceaccount.co
 
 ## Next
 
-EP-05: a hands-on lab on IAM and service account impersonation.
+[EP-05: a hands-on lab on IAM and service account impersonation](../EP-05-Hands-on-Lab-IAM-and-Service-Account-Impersonation/README.md).
 
 ---
 

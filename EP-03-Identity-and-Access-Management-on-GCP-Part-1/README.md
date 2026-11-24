@@ -186,7 +186,7 @@ gcloud organizations add-iam-policy-binding ORGANIZATION_ID \
 
 ## Try it
 
-An account of your own has no organization or folders, but projects work exactly the same way. EP-05 is a full hands-on lab for IAM; this is just a first look.
+An account of your own has no organization or folders, but projects work exactly the same way. [EP-05](../EP-05-Hands-on-Lab-IAM-and-Service-Account-Impersonation/README.md) is a full hands-on lab for IAM; this is just a first look.
 
 See who has access to your project:
 
