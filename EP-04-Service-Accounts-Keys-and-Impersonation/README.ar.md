@@ -186,7 +186,7 @@ gcloud storage ls --impersonate-service-account=SA_EMAIL
 
 ## جرّب بنفسك
 
-الـ EP-05 عبارة عن lab كامل للـ IAM والـ impersonation، فده مجرد تجربة أولى سريعة. محتاج project فيه الـ Compute Engine API شغال، زي اللي عملناه في EP-02.
+الـ [EP-05](../EP-05-Hands-on-Lab-IAM-and-Service-Account-Impersonation/README.ar.md) عبارة عن lab كامل للـ IAM والـ impersonation، فده مجرد تجربة أولى سريعة. محتاج project فيه الـ Compute Engine API شغال، زي اللي عملناه في EP-02.
 
 اعمل service account، واديله access يشوف بيه Compute Engine من غير ما يغير فيه:
 
@@ -294,7 +294,7 @@ gcloud iam service-accounts delete demo-viewer@PROJECT_ID.iam.gserviceaccount.co
 
 ## الجاي
 
-الجزء الجاي (EP-05) عبارة عن lab عملي على الـ IAM والـ service account impersonation.
+الجزء الجاي هو [EP-05، وده lab عملي على الـ IAM والـ service account impersonation](../EP-05-Hands-on-Lab-IAM-and-Service-Account-Impersonation/README.ar.md).
 
 ---
 
